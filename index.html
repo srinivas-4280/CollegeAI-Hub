@@ -1130,15 +1130,34 @@
         <div class="glass-card api-card reveal">
           <div class="lock-icon" id="lockIcon">🔒</div>
           <h3>Connect Your AI Provider</h3>
-          <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 10px">
+          <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 15px">
             Your key stays in your browser — never sent anywhere else.
           </p>
+
+          <!-- Step-by-step guide -->
+          <div style="background:rgba(0,245,255,.04);border:1px solid rgba(0,245,255,.1);border-radius:14px;padding:20px;margin-bottom:18px;text-align:left">
+            <p style="color:var(--cyan);font-family:'Orbitron';font-size:.85rem;margin-bottom:12px;text-align:center">⚡ Get Your Free API Key in 30 Seconds</p>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:center;gap:12px">
+                <span style="background:linear-gradient(135deg,var(--cyan),var(--purple));color:#000;font-weight:900;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0">1</span>
+                <span style="color:var(--text);font-size:.95rem">Go to <strong style="color:var(--gold)">console.groq.com/keys</strong> and sign up for free</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px">
+                <span style="background:linear-gradient(135deg,var(--cyan),var(--purple));color:#000;font-weight:900;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0">2</span>
+                <span style="color:var(--text);font-size:.95rem">Click <strong style="color:var(--gold)">Create API Key</strong> and copy it</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px">
+                <span style="background:linear-gradient(135deg,var(--cyan),var(--purple));color:#000;font-weight:900;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0">3</span>
+                <span style="color:var(--text);font-size:.95rem">Paste it below and hit <strong style="color:var(--gold)">Save</strong> — that's it! 🎉</span>
+              </div>
+            </div>
+          </div>
+
           <select class="tool-select" id="providerSelect" onchange="updateProviderUI()" style="margin-bottom:8px">
             <option value="groq">🚀 Groq (Recommended - Free & Fast)</option>
             <option value="gemini">🔮 Google Gemini</option>
           </select>
-          <div id="providerInfo" style="color:var(--cyan);font-size:.85rem;margin-bottom:8px;padding:8px;background:rgba(0,245,255,.05);border-radius:8px">
-            🚀 Groq is FREE with generous limits! Get key at <a href="https://console.groq.com/keys" target="_blank" style="color:var(--gold);text-decoration:underline">console.groq.com/keys</a>
+          <div id="providerInfo" style="color:var(--cyan);font-size:.85rem;margin-bottom:8px;padding:8px;background:rgba(0,245,255,.05);border-radius:8px;display:none">
           </div>
           <input
             type="password"

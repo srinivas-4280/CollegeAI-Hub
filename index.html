@@ -1,0 +1,1828 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>CollegeAI Hub — Your AI-Powered College Companion</title>
+    <meta
+      name="description"
+      content="CollegeAI Hub: 6 free AI-powered tools for college students. Assignment helper, PDF summarizer, viva prep, project ideas, exam tracker, and report formatter."
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      :root {
+        --cyan: #00f5ff;
+        --purple: #bf00ff;
+        --pink: #ff006e;
+        --gold: #ffd60a;
+        --bg: #03030a;
+        --card: rgba(255, 255, 255, 0.04);
+        --text: #fff;
+        --muted: #8892a4;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Rajdhani", sans-serif;
+        overflow-x: hidden;
+        cursor: none;
+      }
+      h1,
+      h2,
+      h3,
+      h4 {
+        font-family: "Orbitron", sans-serif;
+      }
+      canvas#starfield {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        pointer-events: none;
+      }
+      .custom-cursor {
+        position: fixed;
+        width: 16px;
+        height: 16px;
+        background: var(--cyan);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 10000;
+        mix-blend-mode: screen;
+        box-shadow:
+          0 0 20px var(--cyan),
+          0 0 40px var(--cyan);
+        transition: transform 0.15s;
+      }
+      .cursor-trail {
+        position: fixed;
+        width: 8px;
+        height: 8px;
+        background: var(--cyan);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        opacity: 0;
+        mix-blend-mode: screen;
+      }
+      .bg-orbs {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        pointer-events: none;
+        overflow: hidden;
+      }
+      .bg-orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(120px);
+        opacity: 0.15;
+        animation: orbDrift 20s infinite ease-in-out;
+      }
+      .bg-orb:nth-child(1) {
+        width: 500px;
+        height: 500px;
+        background: var(--purple);
+        top: -10%;
+        left: -5%;
+        animation-duration: 25s;
+      }
+      .bg-orb:nth-child(2) {
+        width: 400px;
+        height: 400px;
+        background: var(--cyan);
+        top: 40%;
+        right: -10%;
+        animation-duration: 30s;
+        animation-delay: -5s;
+      }
+      .bg-orb:nth-child(3) {
+        width: 600px;
+        height: 600px;
+        background: var(--pink);
+        bottom: -15%;
+        left: 30%;
+        animation-duration: 28s;
+        animation-delay: -10s;
+      }
+      .bg-orb:nth-child(4) {
+        width: 350px;
+        height: 350px;
+        background: var(--purple);
+        top: 20%;
+        left: 50%;
+        animation-duration: 22s;
+        animation-delay: -8s;
+      }
+      .bg-orb:nth-child(5) {
+        width: 450px;
+        height: 450px;
+        background: var(--cyan);
+        bottom: 10%;
+        right: 20%;
+        animation-duration: 26s;
+        animation-delay: -12s;
+      }
+      @keyframes orbDrift {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+        }
+        25% {
+          transform: translate(60px, -40px) scale(1.1);
+        }
+        50% {
+          transform: translate(-30px, 60px) scale(0.9);
+        }
+        75% {
+          transform: translate(-50px, -20px) scale(1.05);
+        }
+      }
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-15px);
+        }
+      }
+      @keyframes glow {
+        0%,
+        100% {
+          text-shadow:
+            0 0 20px var(--cyan),
+            0 0 40px var(--cyan);
+        }
+        50% {
+          text-shadow:
+            0 0 40px var(--purple),
+            0 0 80px var(--purple);
+        }
+      }
+      @keyframes gradText {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(60px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      @keyframes marquee {
+        to {
+          transform: translateX(-50%);
+        }
+      }
+      @keyframes flipIn {
+        from {
+          transform: rotateY(90deg);
+          opacity: 0;
+        }
+        to {
+          transform: rotateY(0);
+          opacity: 1;
+        }
+      }
+      @keyframes ripple {
+        to {
+          transform: scale(4);
+          opacity: 0;
+        }
+      }
+      @keyframes countdownPulse {
+        0%,
+        100% {
+          box-shadow: 0 0 20px rgba(255, 0, 110, 0.3);
+        }
+        50% {
+          box-shadow: 0 0 40px rgba(255, 0, 110, 0.6);
+        }
+      }
+      @keyframes launchCount {
+        0% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        80% {
+          transform: scale(1.5);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(2);
+          opacity: 0;
+        }
+      }
+      @keyframes rocketFly {
+        0% {
+          transform: translateY(0);
+        }
+        100% {
+          transform: translateY(-120vh) rotate(-10deg);
+        }
+      }
+      #launch-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--bg);
+        z-index: 99999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+      }
+      #launch-screen .count {
+        font-family: "Orbitron";
+        font-size: 8rem;
+        color: var(--cyan);
+        text-shadow: 0 0 60px var(--cyan);
+        animation: launchCount 0.6s forwards;
+      }
+      #launch-screen .rocket {
+        font-size: 5rem;
+        animation: rocketFly 1s 0.3s forwards;
+      }
+      #launch-screen.hide {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.5s;
+      }
+      nav {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+        padding: 15px 40px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: rgba(3, 3, 10, 0.7);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(0, 245, 255, 0.1);
+        transition: border-color 0.3s;
+      }
+      nav.scrolled {
+        border-bottom-color: var(--cyan);
+        box-shadow: 0 0 30px rgba(0, 245, 255, 0.1);
+      }
+      nav .logo {
+        font-family: "Orbitron";
+        font-size: 1.4rem;
+        font-weight: 900;
+        background: linear-gradient(90deg, var(--cyan), var(--purple));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      nav .logo .planet {
+        display: inline-block;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--cyan), var(--purple));
+        animation: spin 8s linear infinite;
+        box-shadow: 0 0 15px var(--cyan);
+      }
+      nav .nav-links {
+        display: flex;
+        gap: 25px;
+        list-style: none;
+      }
+      nav .nav-links a {
+        color: var(--muted);
+        text-decoration: none;
+        font-family: "Rajdhani";
+        font-weight: 600;
+        font-size: 1.05rem;
+        transition:
+          color 0.3s,
+          text-shadow 0.3s;
+        position: relative;
+      }
+      nav .nav-links a:hover {
+        color: var(--cyan);
+        text-shadow: 0 0 10px var(--cyan);
+      }
+      nav .hamburger {
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+        cursor: pointer;
+        z-index: 1001;
+      }
+      nav .hamburger span {
+        width: 28px;
+        height: 2px;
+        background: var(--cyan);
+        transition: all 0.3s;
+      }
+      .content {
+        position: relative;
+        z-index: 1;
+      }
+      .hero {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        padding: 120px 60px 60px;
+        position: relative;
+      }
+      .hero-text {
+        flex: 1;
+        max-width: 650px;
+      }
+      .hero-title {
+        font-size: clamp(2.5rem, 6vw, 5rem);
+        font-weight: 900;
+        line-height: 1.1;
+        margin-bottom: 20px;
+      }
+      .hero-title .grad {
+        background: linear-gradient(
+          90deg,
+          var(--cyan),
+          var(--purple),
+          var(--pink),
+          var(--cyan)
+        );
+        background-size: 300% 300%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation:
+          gradText 4s ease infinite,
+          glow 3s ease-in-out infinite;
+      }
+      .hero-subtitle {
+        font-size: 1.3rem;
+        color: var(--muted);
+        margin-bottom: 35px;
+        font-weight: 400;
+      }
+      .hero-btns {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+      }
+      .btn {
+        font-family: "Rajdhani";
+        font-weight: 700;
+        font-size: 1.1rem;
+        padding: 14px 32px;
+        border-radius: 12px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s;
+        border: none;
+        outline: none;
+      }
+      .btn-outline {
+        background: transparent;
+        border: 2px solid var(--cyan);
+        color: var(--cyan);
+        box-shadow: 0 0 15px rgba(0, 245, 255, 0.15);
+      }
+      .btn-outline:hover {
+        background: rgba(0, 245, 255, 0.1);
+        box-shadow: 0 0 30px rgba(0, 245, 255, 0.3);
+        transform: translateY(-3px);
+      }
+      .btn-solid {
+        background: linear-gradient(135deg, var(--cyan), var(--purple));
+        color: #fff;
+        box-shadow: 0 0 20px rgba(0, 245, 255, 0.2);
+      }
+      .btn-solid:hover {
+        box-shadow: 0 0 40px rgba(0, 245, 255, 0.4);
+        transform: translateY(-3px);
+      }
+      .btn .ripple-effect {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.4);
+        animation: ripple 0.6s forwards;
+        pointer-events: none;
+      }
+      .hero-visual {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .planet-3d {
+        width: 220px;
+        height: 220px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #1a0a3e, #0a2a4a, #0a3a2a);
+        box-shadow:
+          inset -30px -30px 60px rgba(0, 0, 0, 0.5),
+          0 0 60px rgba(0, 245, 255, 0.3),
+          0 0 120px rgba(191, 0, 255, 0.2);
+        position: relative;
+        animation: float 6s ease-in-out infinite;
+      }
+      .planet-ring {
+        position: absolute;
+        width: 320px;
+        height: 60px;
+        border: 3px solid rgba(0, 245, 255, 0.3);
+        border-radius: 50%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotateX(75deg);
+        box-shadow: 0 0 15px rgba(0, 245, 255, 0.2);
+      }
+      .ticker {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        overflow: hidden;
+        padding: 15px 0;
+        border-top: 1px solid rgba(0, 245, 255, 0.1);
+        border-bottom: 1px solid rgba(0, 245, 255, 0.1);
+        background: rgba(3, 3, 10, 0.5);
+      }
+      .ticker-content {
+        display: flex;
+        white-space: nowrap;
+        animation: marquee 20s linear infinite;
+        color: var(--muted);
+        font-size: 1rem;
+        gap: 30px;
+      }
+      .ticker-content span {
+        color: var(--cyan);
+      }
+      section {
+        padding: 80px 40px;
+        position: relative;
+      }
+      .section-title {
+        text-align: center;
+        font-size: clamp(1.8rem, 4vw, 2.8rem);
+        margin-bottom: 15px;
+      }
+      .section-title .highlight {
+        background: linear-gradient(90deg, var(--cyan), var(--purple));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .section-sub {
+        text-align: center;
+        color: var(--muted);
+        font-size: 1.1rem;
+        margin-bottom: 50px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .glass-card {
+        background: var(--card);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 20px;
+        padding: 35px;
+        transition: all 0.4s;
+        position: relative;
+      }
+      .glass-card:hover {
+        border-color: rgba(0, 245, 255, 0.2);
+        box-shadow: 0 0 40px rgba(0, 245, 255, 0.08);
+        transform: translateY(-8px);
+      }
+      .api-section {
+        display: flex;
+        justify-content: center;
+        padding: 40px;
+      }
+      .api-card {
+        max-width: 550px;
+        width: 100%;
+        text-align: center;
+        animation: float 5s ease-in-out infinite;
+      }
+      .api-card h3 {
+        font-size: 1.5rem;
+        margin-bottom: 8px;
+        color: var(--cyan);
+      }
+      .api-card .lock-icon {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        transition: transform 0.5s;
+      }
+      .api-card .lock-icon.unlocked {
+        transform: rotate(-15deg) scale(1.2);
+      }
+      .api-input {
+        width: 100%;
+        padding: 14px 18px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        color: #fff;
+        font-family: "JetBrains Mono";
+        font-size: 0.9rem;
+        margin: 12px 0;
+        outline: none;
+        transition: border-color 0.3s;
+      }
+      .api-input:focus {
+        border-color: var(--cyan);
+        box-shadow: 0 0 15px rgba(0, 245, 255, 0.1);
+      }
+      .api-status {
+        margin-top: 10px;
+        font-size: 0.9rem;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .api-status.show {
+        opacity: 1;
+      }
+      .api-link {
+        color: var(--cyan);
+        font-size: 0.85rem;
+        text-decoration: none;
+      }
+      .tools-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+        gap: 35px;
+        max-width: 1300px;
+        margin: 0 auto;
+      }
+      .tool-card {
+        padding: 35px;
+        animation: float 5s ease-in-out infinite;
+      }
+      .tool-card:nth-child(2) {
+        animation-delay: -0.8s;
+      }
+      .tool-card:nth-child(3) {
+        animation-delay: -1.6s;
+      }
+      .tool-card:nth-child(4) {
+        animation-delay: -2.4s;
+      }
+      .tool-card:nth-child(5) {
+        animation-delay: -3.2s;
+      }
+      .tool-card:nth-child(6) {
+        animation-delay: -4s;
+      }
+      .tool-icon {
+        font-size: 2.5rem;
+        margin-bottom: 12px;
+      }
+      .tool-title {
+        font-size: 1.3rem;
+        margin-bottom: 6px;
+      }
+      .tool-desc {
+        color: var(--muted);
+        font-size: 0.95rem;
+        margin-bottom: 20px;
+      }
+      .tool-textarea {
+        width: 100%;
+        min-height: 100px;
+        padding: 14px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        color: #fff;
+        font-family: "Rajdhani";
+        font-size: 1rem;
+        resize: vertical;
+        outline: none;
+        transition: border-color 0.3s;
+      }
+      .tool-textarea:focus {
+        border-color: var(--cyan);
+      }
+      .tool-input {
+        width: 100%;
+        padding: 12px 16px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        color: #fff;
+        font-family: "Rajdhani";
+        font-size: 1rem;
+        outline: none;
+        transition: border-color 0.3s;
+        margin-bottom: 10px;
+      }
+      .tool-input:focus {
+        border-color: var(--cyan);
+      }
+      .tool-select {
+        width: 100%;
+        padding: 12px 16px;
+        background: rgba(10, 10, 20, 0.9);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        color: #fff;
+        font-family: "Rajdhani";
+        font-size: 1rem;
+        outline: none;
+        margin-bottom: 10px;
+        cursor: pointer;
+      }
+      .tool-btn {
+        width: 100%;
+        padding: 14px;
+        border: none;
+        border-radius: 12px;
+        font-family: "Rajdhani";
+        font-weight: 700;
+        font-size: 1.1rem;
+        cursor: pointer;
+        margin-top: 12px;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s;
+      }
+      .tool-btn:hover {
+        transform: translateY(-2px);
+      }
+      .tool-btn.cyan {
+        background: linear-gradient(135deg, var(--cyan), #00b4d8);
+        color: #000;
+        box-shadow: 0 0 20px rgba(0, 245, 255, 0.3);
+      }
+      .tool-btn.purple {
+        background: linear-gradient(135deg, var(--purple), #7b2ff7);
+        color: #fff;
+        box-shadow: 0 0 20px rgba(191, 0, 255, 0.3);
+      }
+      .tool-btn.pink {
+        background: linear-gradient(135deg, var(--pink), #ff4d6d);
+        color: #fff;
+        box-shadow: 0 0 20px rgba(255, 0, 110, 0.3);
+      }
+      .tool-btn.gold {
+        background: linear-gradient(135deg, var(--gold), #ffaa00);
+        color: #000;
+        box-shadow: 0 0 20px rgba(255, 214, 10, 0.3);
+      }
+      .tool-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      .output-box {
+        margin-top: 20px;
+        padding: 20px;
+        background: rgba(0, 245, 255, 0.03);
+        border: 1px solid rgba(0, 245, 255, 0.1);
+        border-radius: 12px;
+        display: none;
+        position: relative;
+        font-family: "Rajdhani";
+        line-height: 1.7;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        max-height: 500px;
+        overflow-y: auto;
+      }
+      .output-box.show {
+        display: block;
+        animation: slideUp 0.5s;
+      }
+      .output-box .copy-btn,
+      .output-box .download-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(0, 245, 255, 0.1);
+        border: 1px solid var(--cyan);
+        color: var(--cyan);
+        padding: 6px 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: "Rajdhani";
+        font-size: 0.85rem;
+        transition: all 0.3s;
+      }
+      .output-box .download-btn {
+        right: 90px;
+      }
+      .output-box .copy-btn:hover,
+      .output-box .download-btn:hover {
+        background: rgba(0, 245, 255, 0.2);
+      }
+      .loading {
+        display: none;
+        text-align: center;
+        padding: 20px;
+        color: var(--cyan);
+      }
+      .loading.show {
+        display: block;
+      }
+      .loading .spinner {
+        width: 30px;
+        height: 30px;
+        border: 3px solid rgba(0, 245, 255, 0.2);
+        border-top-color: var(--cyan);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin: 0 auto 10px;
+      }
+      .viva-cards {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 15px;
+      }
+      .viva-card {
+        background: rgba(255, 0, 110, 0.05);
+        border: 1px solid rgba(255, 0, 110, 0.15);
+        border-radius: 12px;
+        padding: 15px;
+        cursor: pointer;
+        transition: all 0.3s;
+        perspective: 600px;
+        min-height: 120px;
+      }
+      .viva-card:hover {
+        border-color: var(--pink);
+      }
+      .viva-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transition: transform 0.6s;
+        transform-style: preserve-3d;
+      }
+      .viva-card.flipped .viva-inner {
+        transform: rotateY(180deg);
+      }
+      .viva-front,
+      .viva-back {
+        backface-visibility: hidden;
+      }
+      .viva-back {
+        position: absolute;
+        top: 0;
+        left: 0;
+        transform: rotateY(180deg);
+        color: var(--cyan);
+        font-size: 0.9rem;
+      }
+      .project-cards {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-top: 15px;
+      }
+      .project-card {
+        background: rgba(255, 214, 10, 0.04);
+        border: 1px solid rgba(255, 214, 10, 0.12);
+        border-radius: 12px;
+        padding: 18px;
+        animation: float 4s ease-in-out infinite;
+      }
+      .project-card:nth-child(odd) {
+        animation-delay: -2s;
+      }
+      .project-card h4 {
+        color: var(--gold);
+        font-family: "Orbitron";
+        font-size: 0.95rem;
+        margin-bottom: 5px;
+      }
+      .exam-cards {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 15px;
+      }
+      .exam-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 18px;
+        border-radius: 14px;
+        border: 1px solid rgba(0, 245, 255, 0.1);
+        background: rgba(0, 245, 255, 0.03);
+        transition: all 0.3s;
+      }
+      .exam-card.urgent {
+        border-color: var(--pink);
+        background: rgba(255, 0, 110, 0.05);
+        animation: countdownPulse 2s infinite;
+      }
+      .exam-card.warning {
+        border-color: var(--gold);
+        background: rgba(255, 214, 10, 0.05);
+      }
+      .exam-card .countdown {
+        font-family: "JetBrains Mono";
+        font-size: 1.1rem;
+        color: var(--cyan);
+      }
+      .exam-card .delete-exam {
+        background: none;
+        border: none;
+        color: var(--pink);
+        font-size: 1.3rem;
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
+      .exam-card .delete-exam:hover {
+        transform: scale(1.2);
+      }
+      .stats-section {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        flex-wrap: wrap;
+        padding: 60px 40px;
+      }
+      .stat-card {
+        text-align: center;
+        padding: 30px 40px;
+        min-width: 180px;
+        animation: float 4s ease-in-out infinite;
+      }
+      .stat-card:nth-child(2) {
+        animation-delay: -1s;
+      }
+      .stat-card:nth-child(3) {
+        animation-delay: -2s;
+      }
+      .stat-card:nth-child(4) {
+        animation-delay: -3s;
+      }
+      .stat-icon {
+        font-size: 2.2rem;
+        margin-bottom: 8px;
+      }
+      .stat-number {
+        font-family: "Orbitron";
+        font-size: 2rem;
+        font-weight: 900;
+        color: var(--cyan);
+      }
+      .stat-label {
+        color: var(--muted);
+        font-size: 1rem;
+        margin-top: 4px;
+      }
+      footer {
+        text-align: center;
+        padding: 60px 40px 30px;
+        border-top: 1px solid rgba(0, 245, 255, 0.08);
+        position: relative;
+        z-index: 1;
+      }
+      footer .footer-logo {
+        font-family: "Orbitron";
+        font-size: 1.5rem;
+        font-weight: 900;
+        background: linear-gradient(90deg, var(--cyan), var(--purple));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 8px;
+      }
+      footer .tagline {
+        color: var(--muted);
+        margin-bottom: 20px;
+      }
+      footer .built-by {
+        color: var(--gold);
+        text-shadow: 0 0 15px rgba(255, 214, 10, 0.4);
+        font-size: 1.1rem;
+        margin-bottom: 5px;
+      }
+      footer .college {
+        color: var(--muted);
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+      }
+      footer .github-link {
+        color: var(--cyan);
+        text-decoration: none;
+        font-size: 1.3rem;
+        transition: text-shadow 0.3s;
+      }
+      footer .github-link:hover {
+        text-shadow: 0 0 15px var(--cyan);
+      }
+      footer .powered {
+        color: var(--muted);
+        font-size: 0.8rem;
+        margin-top: 20px;
+        opacity: 0.6;
+      }
+      .reveal {
+        opacity: 0;
+        transform: translateY(40px);
+        transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      @media (max-width: 768px) {
+        nav .nav-links {
+          position: fixed;
+          top: 0;
+          right: -100%;
+          width: 260px;
+          height: 100vh;
+          background: rgba(3, 3, 10, 0.97);
+          flex-direction: column;
+          padding: 80px 30px;
+          transition: right 0.3s;
+          backdrop-filter: blur(20px);
+        }
+        nav .nav-links.open {
+          right: 0;
+        }
+        nav .hamburger {
+          display: flex;
+        }
+        .hero {
+          flex-direction: column;
+          padding: 120px 25px 80px;
+          text-align: center;
+        }
+        .hero-btns {
+          justify-content: center;
+        }
+        .hero-visual {
+          margin-top: 40px;
+        }
+        .planet-3d {
+          width: 150px;
+          height: 150px;
+        }
+        .planet-ring {
+          width: 220px;
+          height: 45px;
+        }
+        .tools-grid {
+          grid-template-columns: 1fr;
+        }
+        .viva-cards {
+          grid-template-columns: 1fr;
+        }
+        .stats-section {
+          gap: 15px;
+        }
+        .stat-card {
+          min-width: 140px;
+          padding: 20px;
+        }
+        section {
+          padding: 50px 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Launch Screen -->
+    <div id="launch-screen">
+      <div class="count" id="launch-count"></div>
+      <div class="rocket" id="launch-rocket"></div>
+    </div>
+
+    <!-- Custom Cursor -->
+    <div class="custom-cursor" id="cursor"></div>
+    <div class="cursor-trail" id="trail0"></div>
+    <div class="cursor-trail" id="trail1"></div>
+    <div class="cursor-trail" id="trail2"></div>
+    <div class="cursor-trail" id="trail3"></div>
+    <div class="cursor-trail" id="trail4"></div>
+    <div class="cursor-trail" id="trail5"></div>
+    <div class="cursor-trail" id="trail6"></div>
+    <div class="cursor-trail" id="trail7"></div>
+
+    <!-- Star Field Canvas -->
+    <canvas id="starfield"></canvas>
+
+    <!-- Background Orbs -->
+    <div class="bg-orbs">
+      <div class="bg-orb"></div>
+      <div class="bg-orb"></div>
+      <div class="bg-orb"></div>
+      <div class="bg-orb"></div>
+      <div class="bg-orb"></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav id="navbar">
+      <div class="logo"><span class="planet"></span> CollegeAI Hub</div>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#hero" onclick="closeNav()">Home</a></li>
+        <li><a href="#api-section" onclick="closeNav()">API Key</a></li>
+        <li><a href="#tools" onclick="closeNav()">Tools</a></li>
+        <li><a href="#stats" onclick="closeNav()">Stats</a></li>
+        <li><a href="#footer" onclick="closeNav()">Contact</a></li>
+      </ul>
+      <div class="hamburger" id="hamburger" onclick="toggleNav()">
+        <span></span><span></span><span></span>
+      </div>
+    </nav>
+
+    <div class="content">
+      <!-- Hero Section -->
+      <section class="hero" id="hero">
+        <div class="hero-text">
+          <h1 class="hero-title">
+            <span class="grad" id="heroTitle">CollegeAI Hub</span>
+          </h1>
+          <p class="hero-subtitle">
+            Your AI-Powered College Companion — Built for Legends 🚀
+          </p>
+          <div class="hero-btns">
+            <button
+              class="btn btn-outline"
+              onclick="
+                document
+                  .getElementById('tools')
+                  .scrollIntoView({ behavior: 'smooth' })
+              "
+            >
+              Explore Tools
+            </button>
+            <button
+              class="btn btn-solid"
+              onclick="
+                document
+                  .getElementById('api-section')
+                  .scrollIntoView({ behavior: 'smooth' })
+              "
+            >
+              Get Started Free
+            </button>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="planet-3d"><div class="planet-ring"></div></div>
+        </div>
+        <div class="ticker">
+          <div class="ticker-content" id="ticker">
+            <span>⚡</span> AI Tools <span>•</span> Assignment Helper
+            <span>•</span> PDF Summarizer <span>•</span> Viva Prep
+            <span>•</span> Project Ideas <span>•</span> Exam Tracker
+            <span>•</span> Report Formatter <span>•</span> <span>⚡</span> AI
+            Tools <span>•</span> Assignment Helper <span>•</span> PDF Summarizer
+            <span>•</span> Viva Prep <span>•</span> Project Ideas
+            <span>•</span> Exam Tracker <span>•</span> Report Formatter
+            <span>•</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- API Key Section -->
+      <section class="api-section" id="api-section">
+        <div class="glass-card api-card reveal">
+          <div class="lock-icon" id="lockIcon">🔒</div>
+          <h3>Connect Your AI Provider</h3>
+          <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 10px">
+            Your key stays in your browser — never sent anywhere else.
+          </p>
+          <select class="tool-select" id="providerSelect" onchange="updateProviderUI()" style="margin-bottom:8px">
+            <option value="groq">🚀 Groq (Recommended - Free & Fast)</option>
+            <option value="gemini">🔮 Google Gemini</option>
+          </select>
+          <div id="providerInfo" style="color:var(--cyan);font-size:.85rem;margin-bottom:8px;padding:8px;background:rgba(0,245,255,.05);border-radius:8px">
+            🚀 Groq is FREE with generous limits! Get key at <a href="https://console.groq.com/keys" target="_blank" style="color:var(--gold);text-decoration:underline">console.groq.com/keys</a>
+          </div>
+          <input
+            type="password"
+            class="api-input"
+            id="apiKeyInput"
+            placeholder="Paste your API key here..."
+          />
+          <button
+            class="btn btn-solid"
+            style="width: 100%; margin-top: 8px"
+            onclick="saveApiKey()"
+          >
+            Save API Key 🔑
+          </button>
+          <div class="api-status" id="apiStatus"></div>
+        </div>
+      </section>
+
+      <!-- Tools Section -->
+      <section id="tools">
+        <h2 class="section-title reveal">
+          <span class="highlight">🛠️ AI-Powered</span> Tools
+        </h2>
+        <p class="section-sub reveal">
+          Six fully-working tools powered by Google Gemini AI — completely free.
+        </p>
+        <div class="tools-grid">
+          <!-- Tool 1: Assignment Helper -->
+          <div class="glass-card tool-card reveal">
+            <div class="tool-icon">📄</div>
+            <h3 class="tool-title">Assignment Helper</h3>
+            <p class="tool-desc">
+              Get well-structured answers to any assignment question instantly.
+            </p>
+            <textarea
+              class="tool-textarea"
+              id="assignInput"
+              placeholder="Paste your assignment question here..."
+            ></textarea>
+            <button class="tool-btn cyan" onclick="runTool('assign')">
+              Generate Answer 🚀
+            </button>
+            <div class="loading" id="assignLoading">
+              <div class="spinner"></div>
+              AI is thinking...
+            </div>
+            <div class="output-box" id="assignOutput"></div>
+          </div>
+
+          <!-- Tool 2: PDF Summarizer -->
+          <div class="glass-card tool-card reveal">
+            <div class="tool-icon">📚</div>
+            <h3 class="tool-title">PDF Summarizer</h3>
+            <p class="tool-desc">
+              Paste chapter text and get a student-friendly summary with key
+              points.
+            </p>
+            <textarea
+              class="tool-textarea"
+              id="pdfInput"
+              placeholder="Paste your chapter text here to summarize..."
+            ></textarea>
+            <button class="tool-btn purple" onclick="runTool('pdf')">
+              Summarize Now ⚡
+            </button>
+            <div class="loading" id="pdfLoading">
+              <div class="spinner"></div>
+              AI is thinking...
+            </div>
+            <div class="output-box" id="pdfOutput"></div>
+          </div>
+
+          <!-- Tool 3: Viva Prep Bot -->
+          <div class="glass-card tool-card reveal">
+            <div class="tool-icon">🎤</div>
+            <h3 class="tool-title">Viva Prep Bot</h3>
+            <p class="tool-desc">
+              Generate viva questions with model answers. Click cards to flip!
+            </p>
+            <input
+              class="tool-input"
+              id="vivaInput"
+              placeholder="Enter your project / subject topic..."
+            />
+            <button class="tool-btn pink" onclick="runTool('viva')">
+              Generate Viva Questions 🎯
+            </button>
+            <div class="loading" id="vivaLoading">
+              <div class="spinner"></div>
+              AI is thinking...
+            </div>
+            <div class="output-box" id="vivaOutput"></div>
+          </div>
+
+          <!-- Tool 4: Project Idea Generator -->
+          <div class="glass-card tool-card reveal">
+            <div class="tool-icon">💡</div>
+            <h3 class="tool-title">Project Idea Generator</h3>
+            <p class="tool-desc">
+              Get 5 unique, impressive final-year project ideas in your domain.
+            </p>
+            <select class="tool-select" id="projectDomain">
+              <option value="AI/ML">AI / Machine Learning</option>
+              <option value="Web Development">Web Development</option>
+              <option value="IoT">IoT</option>
+              <option value="Cybersecurity">Cybersecurity</option>
+              <option value="Data Science">Data Science</option>
+              <option value="Cloud Computing">Cloud Computing</option>
+              <option value="Blockchain">Blockchain</option>
+              <option value="Mobile Development">Mobile Development</option>
+            </select>
+            <input
+              class="tool-input"
+              id="projectReq"
+              placeholder="Any specific requirements? (optional)"
+            />
+            <button class="tool-btn gold" onclick="runTool('project')">
+              Generate Ideas 💫
+            </button>
+            <div class="loading" id="projectLoading">
+              <div class="spinner"></div>
+              AI is thinking...
+            </div>
+            <div class="output-box" id="projectOutput"></div>
+          </div>
+
+          <!-- Tool 5: Exam Countdown -->
+          <div class="glass-card tool-card reveal">
+            <div class="tool-icon">⏰</div>
+            <h3 class="tool-title">Exam Countdown Tracker</h3>
+            <p class="tool-desc">
+              Add exams and watch live countdowns. Cards change color as exams
+              approach!
+            </p>
+            <input
+              class="tool-input"
+              id="examName"
+              placeholder="Exam name (e.g., Data Structures)"
+            />
+            <input class="tool-input" id="examDate" type="date" />
+            <button class="tool-btn cyan" onclick="addExam()">
+              Add Exam 📅
+            </button>
+            <div class="exam-cards" id="examCards"></div>
+          </div>
+
+          <!-- Tool 6: Smart Report Formatter -->
+          <div class="glass-card tool-card reveal">
+            <div class="tool-icon">📝</div>
+            <h3 class="tool-title">Smart Report Formatter</h3>
+            <p class="tool-desc">
+              Turn raw notes into a properly formatted college report.
+            </p>
+            <input
+              class="tool-input"
+              id="reportTitle"
+              placeholder="Report title..."
+            />
+            <select class="tool-select" id="reportType">
+              <option value="Lab Report">Lab Report</option>
+              <option value="Project Report">Project Report</option>
+              <option value="Assignment">Assignment</option>
+              <option value="Literature Review">Literature Review</option>
+              <option value="Case Study">Case Study</option>
+            </select>
+            <textarea
+              class="tool-textarea"
+              id="reportInput"
+              placeholder="Paste your raw notes or bullet points..."
+            ></textarea>
+            <button class="tool-btn purple" onclick="runTool('report')">
+              Format Report ✨
+            </button>
+            <div class="loading" id="reportLoading">
+              <div class="spinner"></div>
+              AI is thinking...
+            </div>
+            <div class="output-box" id="reportOutput"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Stats Section -->
+      <section class="stats-section" id="stats">
+        <div class="glass-card stat-card reveal">
+          <div class="stat-icon">🚀</div>
+          <div class="stat-number" data-target="6">0</div>
+          <div class="stat-label">AI Tools</div>
+        </div>
+        <div class="glass-card stat-card reveal">
+          <div class="stat-icon">⚡</div>
+          <div class="stat-number" data-target="100">0</div>
+          <div class="stat-label">% Free</div>
+        </div>
+        <div class="glass-card stat-card reveal">
+          <div class="stat-icon">🌍</div>
+          <div class="stat-number" data-target="24">0</div>
+          <div class="stat-label">/ 7 Available</div>
+        </div>
+        <div class="glass-card stat-card reveal">
+          <div class="stat-icon">🔒</div>
+          <div class="stat-number" data-target="100">0</div>
+          <div class="stat-label">% Private</div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer id="footer">
+        <div class="footer-logo">CollegeAI Hub</div>
+        <p class="tagline">Empowering Students with AI — One Tool at a Time</p>
+        <p class="built-by">🚀 Built with ❤️ by Srinivas</p>
+        <p class="college">AI & ML Student</p>
+        <a href="https://github.com/srinivas-4280" target="_blank" class="github-link"
+          >⟨/⟩ GitHub</a
+        >
+        <p class="powered">Powered by Google Gemini AI</p>
+      </footer>
+    </div>
+
+    <script>
+      /* ═══ LAUNCH ANIMATION ═══ */
+      (function () {
+        const ls = document.getElementById("launch-screen"),
+          lc = document.getElementById("launch-count"),
+          lr = document.getElementById("launch-rocket");
+        const seq = ["3", "2", "1", "🚀"];
+        let i = 0;
+        function next() {
+          if (i < seq.length) {
+            lc.textContent = seq[i];
+            lc.style.animation = "none";
+            void lc.offsetWidth;
+            lc.style.animation = "launchCount .6s forwards";
+            i++;
+            if (i < seq.length) setTimeout(next, 600);
+            else {
+              lc.style.display = "none";
+              lr.textContent = "🚀";
+              lr.style.animation = "rocketFly 1s forwards";
+              setTimeout(() => {
+                ls.classList.add("hide");
+                setTimeout(() => (ls.style.display = "none"), 500);
+              }, 800);
+            }
+          }
+        }
+        setTimeout(next, 300);
+      })();
+
+      /* ═══ CUSTOM CURSOR ═══ */
+      const cursor = document.getElementById("cursor");
+      const trails = [];
+      for (let i = 0; i < 8; i++)
+        trails.push(document.getElementById("trail" + i));
+      let mouseX = 0,
+        mouseY = 0;
+      const trailPos = Array(8)
+        .fill(null)
+        .map(() => ({ x: 0, y: 0 }));
+      document.addEventListener("mousemove", (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+      });
+      function updateCursor() {
+        cursor.style.left = mouseX - 8 + "px";
+        cursor.style.top = mouseY - 8 + "px";
+        trailPos.forEach((p, i) => {
+          const prev = i === 0 ? { x: mouseX, y: mouseY } : trailPos[i - 1];
+          p.x += (prev.x - p.x) * 0.4;
+          p.y += (prev.y - p.y) * 0.4;
+          trails[i].style.left = p.x - 4 + "px";
+          trails[i].style.top = p.y - 4 + "px";
+          trails[i].style.opacity = (1 - i / 8) * 0.5;
+        });
+        requestAnimationFrame(updateCursor);
+      }
+      updateCursor();
+      document.querySelectorAll(".btn,.tool-btn").forEach((b) => {
+        b.addEventListener(
+          "mouseenter",
+          () => (cursor.style.transform = "scale(2)"),
+        );
+        b.addEventListener(
+          "mouseleave",
+          () => (cursor.style.transform = "scale(1)"),
+        );
+      });
+
+      /* ═══ STAR FIELD ═══ */
+      const canvas = document.getElementById("starfield"),
+        ctx = canvas.getContext("2d");
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resizeCanvas();
+      window.addEventListener("resize", resizeCanvas);
+      const stars = [];
+      for (let i = 0; i < 300; i++)
+        stars.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          size: Math.random() < 0.6 ? 0.8 : Math.random() < 0.8 ? 1.5 : 2.5,
+          speed: 0.1 + Math.random() * 0.3,
+          twinkle: Math.random() * Math.PI * 2,
+        });
+      let shootingStar = null,
+        shootTimer = 0;
+      function animateStars() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        stars.forEach((s) => {
+          s.twinkle += 0.02;
+          const op = 0.4 + Math.sin(s.twinkle) * 0.4;
+          ctx.fillStyle = `rgba(200,220,255,${op})`;
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+          ctx.fill();
+          s.y += s.speed;
+          if (s.y > canvas.height) {
+            s.y = 0;
+            s.x = Math.random() * canvas.width;
+          }
+        });
+        shootTimer++;
+        if (shootTimer > 480) {
+          shootingStar = {
+            x: Math.random() * canvas.width,
+            y: 0,
+            vx: 3 + Math.random() * 3,
+            vy: 2 + Math.random() * 2,
+            life: 60,
+          };
+          shootTimer = 0;
+        }
+        if (shootingStar) {
+          ctx.strokeStyle = "rgba(0,245,255,.8)";
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(shootingStar.x, shootingStar.y);
+          ctx.lineTo(
+            shootingStar.x - shootingStar.vx * 6,
+            shootingStar.y - shootingStar.vy * 6,
+          );
+          ctx.stroke();
+          shootingStar.x += shootingStar.vx;
+          shootingStar.y += shootingStar.vy;
+          shootingStar.life--;
+          if (shootingStar.life <= 0) shootingStar = null;
+        }
+        requestAnimationFrame(animateStars);
+      }
+      animateStars();
+
+      /* ═══ NAVBAR ═══ */
+      window.addEventListener("scroll", () => {
+        document
+          .getElementById("navbar")
+          .classList.toggle("scrolled", window.scrollY > 50);
+      });
+      function toggleNav() {
+        document.getElementById("navLinks").classList.toggle("open");
+        const h = document.getElementById("hamburger");
+        h.classList.toggle("active");
+      }
+      function closeNav() {
+        document.getElementById("navLinks").classList.remove("open");
+      }
+
+      /* ═══ SCROLL REVEAL ═══ */
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add("visible");
+              if (e.target.classList.contains("stat-card")) {
+                const num = e.target.querySelector(".stat-number");
+                if (num && !num.dataset.counted) {
+                  num.dataset.counted = "1";
+                  const target = +num.dataset.target;
+                  let current = 0;
+                  const step = Math.ceil(target / 40);
+                  const interval = setInterval(() => {
+                    current += step;
+                    if (current >= target) {
+                      current = target;
+                      clearInterval(interval);
+                    }
+                    num.textContent = current;
+                  }, 30);
+                }
+              }
+            }
+          });
+        },
+        { threshold: 0.2 },
+      );
+      document
+        .querySelectorAll(".reveal")
+        .forEach((el) => observer.observe(el));
+
+      /* ═══ BUTTON RIPPLE ═══ */
+      document.querySelectorAll(".btn,.tool-btn").forEach((btn) => {
+        btn.addEventListener("click", function (e) {
+          const r = document.createElement("span");
+          r.classList.add("ripple-effect");
+          const rect = this.getBoundingClientRect();
+          r.style.left = e.clientX - rect.left + "px";
+          r.style.top = e.clientY - rect.top + "px";
+          r.style.width = r.style.height = "10px";
+          this.appendChild(r);
+          setTimeout(() => r.remove(), 600);
+        });
+      });
+
+      /* ═══ PROVIDER UI ═══ */
+      function updateProviderUI() {
+        const provider = document.getElementById('providerSelect').value;
+        const info = document.getElementById('providerInfo');
+        if (provider === 'groq') {
+          info.innerHTML = '🚀 Groq is FREE with generous limits! Get key at <a href="https://console.groq.com/keys" target="_blank" style="color:var(--gold);text-decoration:underline">console.groq.com/keys</a>';
+        } else {
+          info.innerHTML = '🔮 Get your free Gemini key at <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--gold);text-decoration:underline">aistudio.google.com</a>';
+        }
+      }
+
+      /* ═══ API KEY ═══ */
+      (function () {
+        const savedProvider = localStorage.getItem('ai_provider') || 'groq';
+        document.getElementById('providerSelect').value = savedProvider;
+        updateProviderUI();
+        const saved = localStorage.getItem('ai_api_key');
+        if (saved) {
+          document.getElementById('apiKeyInput').value = saved;
+          document.getElementById('lockIcon').textContent = '🔓';
+          document.getElementById('lockIcon').classList.add('unlocked');
+          const st = document.getElementById('apiStatus');
+          st.textContent = '✅ API Key loaded from storage (' + savedProvider + ')';
+          st.style.color = '#00ff88';
+          st.classList.add('show');
+        }
+      })();
+      function saveApiKey() {
+        const key = document.getElementById('apiKeyInput').value.trim();
+        const provider = document.getElementById('providerSelect').value;
+        const st = document.getElementById('apiStatus');
+        if (!key) {
+          st.textContent = '❌ Please enter a valid API key';
+          st.style.color = 'var(--pink)';
+          st.classList.add('show');
+          return;
+        }
+        localStorage.setItem('ai_api_key', key);
+        localStorage.setItem('ai_provider', provider);
+        document.getElementById('lockIcon').textContent = '🔓';
+        document.getElementById('lockIcon').classList.add('unlocked');
+        st.textContent = '✅ API Key Saved! Provider: ' + (provider === 'groq' ? 'Groq 🚀' : 'Gemini 🔮');
+        st.style.color = '#00ff88';
+        st.classList.add('show');
+      }
+
+      /* ═══ AI API CALL (Gemini + Groq) ═══ */
+      async function callGemini(prompt) {
+        const key = localStorage.getItem('ai_api_key');
+        if (!key) throw new Error('Please save your API key first!');
+        const provider = localStorage.getItem('ai_provider') || 'groq';
+
+        if (provider === 'groq') {
+          const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
+            body: JSON.stringify({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], temperature: 0.7, max_tokens: 4096 })
+          });
+          if (!res.ok) { const err = await res.json().catch(() => ({})); throw new Error(err.error?.message || 'Groq API failed. Check your key.'); }
+          const data = await res.json();
+          return data.choices?.[0]?.message?.content || 'No response received.';
+        } else {
+          const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+          });
+          if (!res.ok) { const err = await res.json().catch(() => ({})); throw new Error(err.error?.message || 'Gemini API failed. Check your key.'); }
+          const data = await res.json();
+          return data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response received.';
+        }
+      }
+
+      /* ═══ TOOL RUNNER ═══ */
+      async function runTool(tool) {
+        const prompts = {
+          assign: {
+            input: "assignInput",
+            loading: "assignLoading",
+            output: "assignOutput",
+            prompt: (i) =>
+              `You are a helpful academic assistant. For this assignment question, provide: 1) A clear introduction 2) 3-4 main points with explanations 3) Real examples 4) A strong conclusion. Format with proper headings. Question: ${i}`,
+          },
+          pdf: {
+            input: "pdfInput",
+            loading: "pdfLoading",
+            output: "pdfOutput",
+            prompt: (i) =>
+              `Summarize this academic content for a student. Provide: 1) One-line overview 2) 5 key concepts as bullet points 3) Important definitions 4) What to remember for exams. Keep it clear and student-friendly. Content: ${i}`,
+          },
+          viva: {
+            input: "vivaInput",
+            loading: "vivaLoading",
+            output: "vivaOutput",
+            prompt: (i) =>
+              `Generate 8 viva voce questions for a student whose project/topic is: ${i}. For each question provide the question and a model answer in 3-4 lines. Format as Q1, A1, Q2, A2... Make questions range from basic to advanced.`,
+          },
+          project: {
+            input: null,
+            loading: "projectLoading",
+            output: "projectOutput",
+            prompt: () => {
+              const d = document.getElementById("projectDomain").value;
+              const r = document.getElementById("projectReq").value;
+              return `Generate 5 unique, impressive final year project ideas for a college student in ${d}.${r ? " Requirements: " + r : ""} For each idea provide: Project name, one-line description, tech stack needed, difficulty level (use star emojis ⭐), unique selling point. Make them innovative and doable in 6 months.`;
+            },
+          },
+          report: {
+            input: "reportInput",
+            loading: "reportLoading",
+            output: "reportOutput",
+            prompt: (i) => {
+              const t =
+                document.getElementById("reportTitle").value ||
+                "Untitled Report";
+              const rt = document.getElementById("reportType").value;
+              return `Format the following raw notes into a proper college ${rt}. Title: "${t}". Include: Title Page info, Abstract (100 words), Introduction, Main Body with proper headings and subheadings, Conclusion, References section (suggest 3 relevant references). Make it formal and academic. Raw notes: ${i}`;
+            },
+          },
+        };
+        const cfg = prompts[tool];
+        if (!cfg) return;
+        let userInput;
+        if (tool === "project") {
+          userInput = "_";
+        } else {
+          userInput = document.getElementById(cfg.input).value.trim();
+          if (!userInput) {
+            alert("Please enter some input first!");
+            return;
+          }
+        }
+        const loading = document.getElementById(cfg.loading),
+          output = document.getElementById(cfg.output);
+        loading.classList.add("show");
+        output.classList.remove("show");
+        output.innerHTML = "";
+        try {
+          const prompt =
+            typeof cfg.prompt === "function"
+              ? cfg.prompt(userInput)
+              : cfg.prompt(userInput);
+          const result = await callGemini(prompt);
+          loading.classList.remove("show");
+          if (tool === "viva") {
+            renderVivaCards(result, output);
+          } else {
+            output.innerHTML = `<button class="copy-btn" onclick="copyOutput(this)">📋 Copy</button>${tool === "report" ? '<button class="download-btn" onclick="downloadOutput(this)">⬇ Download</button>' : ""}${formatOutput(result)}`;
+            output.classList.add("show");
+          }
+        } catch (err) {
+          loading.classList.remove("show");
+          output.innerHTML = `<span style="color:var(--pink)">❌ ${err.message}</span>`;
+          output.classList.add("show");
+        }
+      }
+
+      function formatOutput(text) {
+        return text
+          .replace(
+            /\*\*(.*?)\*\*/g,
+            '<strong style="color:var(--cyan)">$1</strong>',
+          )
+          .replace(/\*(.*?)\*/g, "<em>$1</em>")
+          .replace(
+            /#{1,3}\s?(.*)/g,
+            '<h4 style="color:var(--purple);margin:12px 0 6px;font-size:1.1rem">$1</h4>',
+          )
+          .replace(/\n/g, "<br>");
+      }
+
+      function renderVivaCards(text, output) {
+        const pairs = text.split(/Q\d+[\.:]/i).filter(Boolean);
+        let html = '<div class="viva-cards">';
+        pairs.forEach((p, i) => {
+          const parts = p.split(/A\d+[\.:]/i);
+          const q = parts[0]?.trim() || "";
+          const a = parts[1]?.trim() || "";
+          if (q)
+            html += `<div class="viva-card" onclick="this.classList.toggle('flipped')"><div class="viva-inner"><div class="viva-front"><strong style="color:var(--pink)">Q${i + 1}:</strong> ${q}</div><div class="viva-back">${a}</div></div></div>`;
+        });
+        html += "</div>";
+        output.innerHTML = html;
+        output.classList.add("show");
+      }
+
+      function copyOutput(btn) {
+        const text = btn.parentElement.innerText;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.textContent = "✅ Copied!";
+          setTimeout(() => (btn.textContent = "📋 Copy"), 2000);
+        });
+      }
+      function downloadOutput(btn) {
+        const text = btn.parentElement.innerText;
+        const blob = new Blob([text], { type: "text/plain" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "report.txt";
+        a.click();
+      }
+
+      /* ═══ EXAM COUNTDOWN ═══ */
+      let exams = JSON.parse(localStorage.getItem("exams") || "[]");
+      function addExam() {
+        const name = document.getElementById("examName").value.trim();
+        const date = document.getElementById("examDate").value;
+        if (!name || !date) {
+          alert("Please enter exam name and date!");
+          return;
+        }
+        exams.push({ name, date: date + "T23:59:59" });
+        localStorage.setItem("exams", JSON.stringify(exams));
+        document.getElementById("examName").value = "";
+        document.getElementById("examDate").value = "";
+        renderExams();
+      }
+      function deleteExam(i) {
+        exams.splice(i, 1);
+        localStorage.setItem("exams", JSON.stringify(exams));
+        renderExams();
+      }
+      function renderExams() {
+        const container = document.getElementById("examCards");
+        container.innerHTML = "";
+        exams.forEach((ex, i) => {
+          const diff = new Date(ex.date) - new Date();
+          if (diff < 0) {
+            container.innerHTML += `<div class="exam-card" style="opacity:.5"><div><strong>${ex.name}</strong><br><span style="color:var(--pink)">Exam passed!</span></div><button class="delete-exam" onclick="deleteExam(${i})">✕</button></div>`;
+            return;
+          }
+          const days = Math.floor(diff / 864e5),
+            hrs = Math.floor((diff % 864e5) / 36e5),
+            mins = Math.floor((diff % 36e5) / 6e4),
+            secs = Math.floor((diff % 6e4) / 1e3);
+          let cls = "exam-card";
+          if (days < 3) cls += " urgent";
+          else if (days < 7) cls += " warning";
+          container.innerHTML += `<div class="${cls}"><div><strong>${ex.name}</strong><br><span style="color:var(--muted)">${new Date(ex.date).toLocaleDateString()}</span><br><span style="color:var(--cyan);font-size:.9rem">You have ${days} days to prepare! 💪</span></div><div class="countdown">${String(days).padStart(2, "0")}d : ${String(hrs).padStart(2, "0")}h : ${String(mins).padStart(2, "0")}m : ${String(secs).padStart(2, "0")}s</div><button class="delete-exam" onclick="deleteExam(${i})">✕</button></div>`;
+        });
+      }
+      renderExams();
+      setInterval(renderExams, 1000);
+
+      /* ═══ 3D CARD TILT ═══ */
+      document.querySelectorAll(".glass-card").forEach((card) => {
+        card.addEventListener("mousemove", (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width - 0.5;
+          const y = (e.clientY - rect.top) / rect.height - 0.5;
+          card.style.transform = `translateY(-8px) perspective(800px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg)`;
+        });
+        card.addEventListener("mouseleave", () => {
+          card.style.transform = "";
+        });
+      });
+
+      /* ═══ PARALLAX ═══ */
+      window.addEventListener("scroll", () => {
+        const s = window.scrollY;
+        document.querySelector(".bg-orbs").style.transform =
+          `translateY(${s * 0.15}px)`;
+      });
+    </script>
+    <!--
+  DEPLOY ON VERCEL:
+  1. Save this file as index.html
+  2. Push to GitHub repo
+  3. Go to vercel.com → Import repo → Deploy
+  DONE! Your site is live in 60 seconds.
+-->
+  </body>
+</html>
